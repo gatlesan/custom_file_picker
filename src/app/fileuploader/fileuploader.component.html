@@ -1,0 +1,44 @@
+<!--
+<button (click)='uploadFile()'>
+  {{btnLable}}
+</button>
+-->
+
+
+<!-- Custom dialog/model-->
+<div>
+  <button class='btn btn-primary' (click)="openModal('custom-modal-1')">Upload a file</button>
+</div>
+
+
+
+<mz-modal id="custom-modal-1">
+  <form class="" id="upload-new-file">
+    <div class="">
+     <!-- <label class="">File</label> -->
+      <div class="controls" style="position: relative;">
+        <input name="file" type="file" onchange="document.getElementById('new-file-path').innerHTML = this.value"
+          class="">
+        <span id="new-file-path"></span>
+        <p class=""></p>
+      </div>
+
+    </div>
+
+    <div class="">
+     <label class="">File Name</label> 
+      <div class="controls">
+        <input type="text" class="" name="file_name">
+      </div>
+    </div>
+
+    <div style="margin-top: 5px;">
+      <button type="submit" class="btn btn-primary">Upload this file</button>
+      <button class="btn btn-primary" (click)="closeModal('custom-modal-1');" style="margin-left: 5px;">Cancel</button>
+    </div>
+
+    <div>
+
+    </div>
+  </form>
+</mz-modal>
