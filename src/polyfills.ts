@@ -43,13 +43,12 @@ import 'core-js/es7/reflect';
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
  */
 // Run `npm install --save intl`.
-// import 'intl'; 
-// import 'intl/locale-data/complete.js';
-// import 'intl/locale-data/jsonp/en.js';
+import 'intl'; 
+import 'intl/locale-data/complete.js';
+import 'intl/locale-data/jsonp/en.js';
 
-// if (typeof SVGElement.prototype.contains == 'undefined') {
-//     SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
-// }
-
-import '@webcomponents/webcomponentsjs/webcomponents-loader.js';
+if (typeof SVGElement.prototype.contains == 'undefined') {
+    SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
+}
+// webcomponents-bundle is not required
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
