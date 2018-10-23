@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 //import { MatDialog } from '@angular/material';
 import { ModalService } from '../services/modal.service';
+import { HttpClient } from '@angular/common/http';
 
 import '../css/modal.less'
 
@@ -11,17 +12,29 @@ import '../css/modal.less'
 })
 export class FileuploaderComponent implements OnInit {
 
-  public bodyText: string;
-
-  constructor(private modalService: ModalService) {
+  constructor(private modalService: ModalService, private http: HttpClient) {
     console.log("loaded");
   }
 
   ngOnInit() {
-    this.bodyText = 'This text can be updated in modal 1';
   }
 
-  public btnLable = 'Upload new file';
+  public btnLable = 'Upload this file';
+  public selectedFile: File;
+
+  onFileSelect(event) {
+    console.log(event);
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile.name);
+  }
+
+  onFileUpload(event) {
+    console.log(event);
+    const uploadData = new FormData();
+    uploadData.append('file', this.selectedFile, this.selectedFile.name);
+    this.http.post('', uploadData)
+      .subscribe();
+  }
 
   openModal(id: string) {
     this.modalService.open(id);

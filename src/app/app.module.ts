@@ -7,6 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ModalComponent} from './directives/model.component';
 import { ModalService } from './services/modal.service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { ModalService } from './services/modal.service';
     BrowserAnimationsModule,
     //MatDialogModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   // An entry component is any component that Angular loads imperatively, (which means you're not referencing it in the template).
   entryComponents: [FileuploaderComponent],
