@@ -6,7 +6,7 @@
 
 
 <!-- Custom dialog/model-->
-<div>
+<!-- <div class = 'bg-test'>
   <button class='btn btn-primary' (click)="openModal('custom-modal-1')">Upload a file</button>
 </div>
 
@@ -14,10 +14,8 @@
 <mz-modal id="custom-modal-1">
   <form class="" id="upload-new-file">
     <div class="">
-     <!-- <label class="">File</label> -->
       <div class="controls" style="position: relative;">
-        <input name="file" type="file" (change)="onFileSelect($event)">
-        <!-- <span id="new-file-path"></span> -->
+        <input name="file" type="file" (change)="onFileSelect($event)" required>
         <p class=""></p>
       </div>
 
@@ -26,7 +24,7 @@
     <div class="">
      <label class="">File Name</label> 
       <div class="controls">
-        <input type="text" class="" name="file_name">
+        <input type="text"  class="form-control" name="file_name" required>
       </div>
     </div>
 
@@ -39,4 +37,8 @@
 
     </div>
   </form>
-</mz-modal>
+</mz-modal> -->
+<p class="bg-test"> Testing view encapsulation </p>
+<!-- <angular-file-uploader [config]="afuConfig"></angular-file-uploader> -->
+<app-file-cust-picker [config]='afuConfig'></app-file-cust-picker>
+    

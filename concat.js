@@ -8,3 +8,9 @@ concat([
     if (err) throw err
     console.log('done');
 });
+
+//write the code to copy the fileuploader.js to mashzone server.. to..
+//C:\SANKUM_SAG-9JGN882_MZNG_DEV\Presto\Trunk\runtime\src\main\dist\apache-tomcat\webapps\mashzone\hub\dashboard\custom-js
+
+
+

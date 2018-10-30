@@ -20,10 +20,10 @@ import 'core-js/es6/reflect';
 import 'core-js/client/shim';
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run `npm install --save classlist.js`.
+import 'classlist.js';  // Run `npm install --save classlist.js`.
 
 /** IE10 and IE11 requires the following to support `@angular/animation`. */
-// import 'web-animations-js';  // Run `npm install --save web-animations-js`.
+import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
 /***************************************************************************************************
 * Zone JS is required by Angular itself.
@@ -35,21 +35,21 @@ import 'core-js/client/shim';
 */
 
 /* polyfill ie11 */
-// import 'core-js/es7/array';
-// import 'core-js/es7/reflect';
+import 'core-js/es7/array';
+import 'core-js/es7/reflect';
 
 /**
  * Date, currency, decimal and percent pipes.
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
  */
 // Run `npm install --save intl`.
-// import 'intl'; 
-// import 'intl/locale-data/complete.js';
-// import 'intl/locale-data/jsonp/en.js';
+import 'intl'; 
+import 'intl/locale-data/complete.js';
+import 'intl/locale-data/jsonp/en.js';
 
-// if (typeof SVGElement.prototype.contains == 'undefined') {
-//     SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
-// }
+if (typeof SVGElement.prototype.contains == 'undefined') {
+    SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
+}
 
 /* As project is compiled to serve ES5 to all browsers, ES5-style classes cannot properly extend ES6 
 classes creates problem in chrome therefore need below adapter */
