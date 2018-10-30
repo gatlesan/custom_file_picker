@@ -1,16 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnInit, Injector, ChangeDetectorRef } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-file-cust-picker',
   templateUrl: './file-cust-picker.component.html',
-  styles: [`.constraints-info{margin-top:10px;font-style:italic}.padMarg{padding:0;margin-bottom:0}.caption{margin-right:5px}.textOverflow{white-space:nowrap;padding-right:0;overflow:hidden;text-overflow:ellipsis}.up_btn{color:#000;background-color:transparent;border:2px solid #5c5b5b;border-radius:22px}.delFileIcon{text-decoration:none;color:#ce0909}.dragNDrop .div1{display:border-box;border:2px dashed #5c5b5b;height:6rem;width:20rem}.dragNDrop .div1>p{text-align:center;font-weight:700;color:#5c5b5b;margin-top:1.4em}.dragNDropBtmPad{padding-bottom:2rem}@media screen and (max-width:620px){.caption{padding:0}}@media screen and (max-width:510px){.sizeC{width:25%}}@media screen and (max-width:260px){.caption,.sizeC{font-size:10px}}.resetBtn{margin-left:3px}`]
+  styleUrls: ['./file-cust-picker.component.css']
 })
 export class FileCustPickerComponent implements OnInit {
 
 
   @Input() config: any;
   @Input() resetUpload;
+  @Input() previewWidth: number = 50;
   @Output() ApiResponse = new EventEmitter<any>();
   public idDate: Number;
   public reg: any;
@@ -39,10 +41,9 @@ export class FileCustPickerComponent implements OnInit {
   public headers: any;
   public uploadBtnText = "upload";
   public hideProgressBar = false;
-  public previewWidth: number = 50;
 
 
-  constructor(private ref: ChangeDetectorRef) { }
+  constructor(private ref: ChangeDetectorRef, private sanitizer: DomSanitizer,) { }
 
   ngOnInit() {
     this.resetUpload = false;
@@ -82,7 +83,6 @@ export class FileCustPickerComponent implements OnInit {
     }
     //FORMATS ALLOWED LIST
     //console.log("FORMATS ALLOWED LIST= "+this.formatsAllowed);
-    //NO OF FORMATS ALLOWED
 
     let formatsCount;
     formatsCount = this.formatsAllowed.match(new RegExp("\\.", "g"));
@@ -138,7 +138,10 @@ export class FileCustPickerComponent implements OnInit {
           continue;
         }
         else {
-          //format allowed and size allowed then add file to selectedFile array
+          //format allowed and size allowed then add file to selectedFile array,  add objectURL before adding
+          if (this.isImage(file[i])) {
+            file[i].objectURL = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file[i]));
+          }
           this.selectedFiles.push(file[i]);
           console.log("file got added " + this.selectedFiles);
           console.warn("file got added " + this.selectedFiles);

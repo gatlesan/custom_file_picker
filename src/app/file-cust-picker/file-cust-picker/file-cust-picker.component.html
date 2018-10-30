@@ -1,7 +1,7 @@
-<div class="container" *ngIf="(theme !== 'attachPin')" id="default">
+<div class="container" id="default">
 
     <!-- Drag n Drop theme Starts -->
-    <div *ngIf="theme == 'dragNDrop'" id="dragNDrop" [ngClass]="(hideSelectBtn && hideResetBtn) ? null : 'dragNDropBtmPad'"
+    <div *ngIf="theme == 'inc-dragNDrop'" id="dragNDrop" [ngClass]="(hideSelectBtn && hideResetBtn) ? null : 'dragNDropBtmPad'"
         class="dragNDrop">
         <div style="position:relative;">
             <div id="div1" class="div1 afu-dragndrop-box" (drop)="drop($event)" (dragover)="allowDrop($event)">
@@ -21,12 +21,13 @@
         *1024000))}}</p>
     <!--Selected file list-->
     <div class="row afu-valid-file" *ngFor="let sf of selectedFiles;let i=index">
-        <p class="col-xs-3 textOverflow"><span class="text-primary">{{sf.name}}</span></p>
-        <p class="col-xs-2 sizeC"><strong>({{convertSize(sf.size)}})</strong></p>
-        <p class="col-xs-2">
+        <div class="col-xs-1"><img [src]="sf.objectURL" *ngIf="isImage(sf)" [width]="previewWidth"/></div>
+        <div class="col-xs-2 textOverflow"><span class="text-primary">{{sf.name}}</span></div>
+        <div class="col-xs-1 size-convert"><strong>{{convertSize(sf.size)}}</strong></div>
+        <div class="col-xs-2">
             <span class="glyphicon glyphicon-remove-sign col-xs-1" (click)="onRemoveFile(i)"></span>
             <span class="glyphicon glyphicon-edit col-xs-1" (click)="onEditFile(i)"></span>
-        </p>
+        </div>
         <!--  <input class="col-xs-3 progress caption"  type="text"  placeholder="Caption.."  [(ngModel)]="Caption[i]"  *ngIf="uploadClick"/> -->
         <div class="progress col-xs-3 padMarg afu-progress-bar" *ngIf="singleFile && progressBarShow && !hideProgressBar">
             <span class="progress-bar progress-bar-success" role="progressbar" [ngStyle]="{'width':percentComplete+'%'}">{{percentComplete}}%</span>
@@ -52,29 +53,3 @@
             <button class="btn btn-success afu-upload-btn" type="button" (click)="uploadFiles()" [disabled]=!uploadBtn>{{uploadBtnText}}</button>
             <br>
 </div>
-
-<!--/////////////////////////// ATTACH PIN THEME  //////////////////////////////////////////////////////////-->
-<div *ngIf="theme == 'attachPin'" id="attachPin">
-    <div style="position:relative;padding-left:6px">
-        <a class='btn up_btn afu-attach-pin' (click)="attachpinOnclick()">
-            {{attachPinText}}
-            <i class="fa fa-paperclip" aria-hidden="true"></i>
-            <!-- <p style="margin-top:10px">({{formatsAllowed}}) Size limit- {{(convertSize(maxSize * 1024000))}}</p> -->
-            <input type="file" id="sel{{id}}" (change)="onChange($event)" style="display: none" title="Select file"
-                name="files[]" [accept]=formatsAllowed [attr.multiple]="multiple ? '' : null" />
-            <br>
-        </a>
-        &nbsp;
-        <span class='label label-info' id="upload-file-info{{id}}">{{selectedFiles[0]?.name}}</span>
-    </div>
-</div>
-
-<!--/////////////////////////// DRAG N DROP THEME  //////////////////////////////////////////////////////////-->
-<!-- <div *ngIf="theme == 'dragNDrop'" id="dragNDrop">
-<div style="position:relative;padding-left:6px">
-  <div id="div1" (drop)="drop($event)" (dragover)="allowDrop($event)">
-    <p>Drag N Drop</p>
-  </div>
-  <span class='label label-info' id="upload-file-info{{id}}">{{selectedFiles[0]?.name}}</span>
-</div>
-</div> -->
