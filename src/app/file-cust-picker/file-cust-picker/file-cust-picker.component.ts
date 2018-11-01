@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, Injector, ChangeDetectorRef } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
-import {DomSanitizer} from '@angular/platform-browser';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-file-cust-picker',
@@ -41,9 +40,9 @@ export class FileCustPickerComponent implements OnInit {
   public headers: any;
   public uploadBtnText = "upload";
   public hideProgressBar = false;
+  public showNameInput: Boolean;
 
-
-  constructor(private ref: ChangeDetectorRef, private sanitizer: DomSanitizer,) { }
+  constructor(private ref: ChangeDetectorRef, private sanitizer: DomSanitizer, ) { }
 
   ngOnInit() {
     this.resetUpload = false;
@@ -91,13 +90,13 @@ export class FileCustPickerComponent implements OnInit {
     //console.log("-------------------------------");
     //ITERATE SELECTED FILES
 
-    let file;
+    let files;
     if (event.type == "drop") {
-      file = event.dataTransfer.files;
+      files = event.dataTransfer.files;
       //console.log("type: drop");
     }
     else {
-      file = event.target.files || event.srcElement.files;
+      files = event.target.files || event.srcElement.files;
       //console.log("type: change");
     }
     //console.log(file);
@@ -107,10 +106,10 @@ export class FileCustPickerComponent implements OnInit {
     let ext;
 
     let frmtAllowed;
-    for (let i = 0; i < file.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       //CHECK FORMAT
       //CURRENT FILE EXTENSION
-      currentFileExt = this.reg.exec(file[i].name);
+      currentFileExt = this.reg.exec(files[i].name);
       currentFileExt = currentFileExt[1];
       //console.log(file[i].name);
       frmtAllowed = false;
@@ -128,21 +127,21 @@ export class FileCustPickerComponent implements OnInit {
       if (frmtAllowed) {
         //console.log("FORMAT ALLOWED");
         //CHECK SIZE
-        if (file[i].size > this.maxSize * 1024000) {
+        if (files[i].size > this.maxSize * 1024000) {
           //console.log("SIZE NOT ALLOWED ("+file[i].size+")");
           this.notAllowedList.push({
-            fileName: file[i].name,
-            fileSize: this.convertSize(file[i].size),
+            fileName: files[i].name,
+            fileSize: this.convertSize(files[i].size),
             errorMsg: "Invalid size"
           });
           continue;
         }
         else {
           //format allowed and size allowed then add file to selectedFile array,  add objectURL before adding
-          if (this.isImage(file[i])) {
-            file[i].objectURL = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file[i]));
+          if (this.isImage(files[i])) {
+            files[i].objectURL = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(files[i]));
           }
-          this.selectedFiles.push(file[i]);
+          this.selectedFiles.push(files[i]);
           console.log("file got added " + this.selectedFiles);
           console.warn("file got added " + this.selectedFiles);
         }
@@ -150,8 +149,8 @@ export class FileCustPickerComponent implements OnInit {
       else {
         //console.log("FORMAT NOT ALLOWED");
         this.notAllowedList.push({
-          fileName: file[i].name,
-          fileSize: this.convertSize(file[i].size),
+          fileName: files[i].name,
+          fileSize: this.convertSize(files[i].size),
           errorMsg: "Invalid format"
         });
         continue;
@@ -316,7 +315,23 @@ export class FileCustPickerComponent implements OnInit {
   }
 
   onEditFile(index) {
+    this.selectedFiles[index].showNameInput = true;
     console.log(this.selectedFiles[index]);
+    console.log(this.selectedFiles[index].showNameInput);
+  }
+
+  showNameInputbox(index) {
+    this.selectedFiles[index].showNameInput = true;
+    //console.log(this.selectedFiles[index]);
+  }
+
+  hideNameInputbox(index) {
+    this.selectedFiles[index].showNameInput = false;
+    //console.log(this.selectedFiles[index]);
+  }
+
+  changeInputVal(event) {
+    console.log(event.path.value);
   }
 
   isImage(file: File): boolean {

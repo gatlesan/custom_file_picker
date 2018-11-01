@@ -21,12 +21,12 @@
         *1024000))}}</p>
     <!--Selected file list-->
     <div class="row afu-valid-file" *ngFor="let sf of selectedFiles;let i=index">
-        <div class="col-xs-1"><img [src]="sf.objectURL" *ngIf="isImage(sf)" [width]="previewWidth"/></div>
-        <div class="col-xs-2 textOverflow"><span class="text-primary">{{sf.name}}</span></div>
+        <div class="col-xs-1"><img [src]="sf.objectURL" *ngIf="isImage(sf)" [width]="previewWidth" /></div>
+        <div class="col-xs-2 textOverflow"><input type="text" (change)="changeInputVal($event)" (focus)="showNameInputbox(i)" (focusout)="hideNameInputbox(i)"  [ngClass]="sf.showNameInput ? 'text-primary' : 'fileNameInput text-primary'" value={{sf.name}}></div>
         <div class="col-xs-1 size-convert"><strong>{{convertSize(sf.size)}}</strong></div>
         <div class="col-xs-2">
-            <span class="glyphicon glyphicon-remove-sign col-xs-1" (click)="onRemoveFile(i)"></span>
-            <span class="glyphicon glyphicon-edit col-xs-1" (click)="onEditFile(i)"></span>
+            <a class="glyphicon glyphicon-remove-sign col-xs-1" (click)="onRemoveFile(i)"></a>
+            <a class="glyphicon glyphicon-edit col-xs-1" (click)="onEditFile(i)"></a>
         </div>
         <!--  <input class="col-xs-3 progress caption"  type="text"  placeholder="Caption.."  [(ngModel)]="Caption[i]"  *ngIf="uploadClick"/> -->
         <div class="progress col-xs-3 padMarg afu-progress-bar" *ngIf="singleFile && progressBarShow && !hideProgressBar">
@@ -36,10 +36,11 @@
     </div>
     <!--Invalid file list-->
     <div class="row text-danger afu-invalid-file" *ngFor="let na of notAllowedList;let j=index">
-        <p class="col-xs-3 textOverflow"><span>{{na['fileName']}}</span></p>
-        <p class="col-xs-3 padMarg sizeC"><strong>({{na['fileSize']}})</strong></p>
-        <p class="col-xs-3 ">{{na['errorMsg']}}</p>
-        <a class="col-xs-1 delFileIcon" role="button" (click)="removeFile(j,'na')" *ngIf="uploadClick">&nbsp;<i class="fa fa-times"></i></a>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-2 textOverflow"><span>{{na['fileName']}}</span></div>
+        <div class="col-xs-1 size-convert"><strong>({{na['fileSize']}})</strong></div>
+        <div class="col-xs-2"><a class="glyphicon glyphicon-remove-sign col-xs-1 delFileIcon" role="button" (click)="removeFile(j,'na')"
+                *ngIf="uploadClick"></a></div>
     </div>
 
     <p *ngIf="uploadMsg" class="{{uploadMsgClass}} + afu-upload-status">{{uploadMsgText}}<p>
