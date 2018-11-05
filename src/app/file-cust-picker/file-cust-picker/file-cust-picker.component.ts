@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -17,8 +17,6 @@ export class FileCustPickerComponent implements OnInit {
   public reg: any;
   public notAllowedList: any[];
   public Caption = [];
-  public singleFile: Boolean;
-  public progressBarShow: Boolean;
   public uploadBtn: Boolean;
   public uploadMsg: Boolean;
   public afterUpload: Boolean;
@@ -31,18 +29,16 @@ export class FileCustPickerComponent implements OnInit {
   public theme: String;
   // refactor id
   id;
-  public hideSelectBtn: Boolean;
-  public hideResetBtn: Boolean;
-  public attachPinText: String;
   public uploadMsgClass = "";
   public uploadMsgText: String;
   public uploadAPI: any;
   public headers: any;
   public uploadBtnText = "upload";
-  public hideProgressBar = false;
   public showNameInput: Boolean;
+  public showUpload: Boolean;
+  public showSearch: Boolean;
 
-  constructor(private ref: ChangeDetectorRef, private sanitizer: DomSanitizer, ) { }
+  constructor(private ref: ChangeDetectorRef, private sanitizer: DomSanitizer, private elementRef: ElementRef) { }
 
   ngOnInit() {
     this.resetUpload = false;
@@ -52,29 +48,37 @@ export class FileCustPickerComponent implements OnInit {
     // this.selectedFiles = [];
     this.notAllowedList = [];
     this.Caption = [];
-    this.singleFile = true;
-    this.progressBarShow = false;
     this.uploadBtn = false;
     this.uploadMsg = false;
     this.afterUpload = false;
     this.uploadClick = true;
-    this.attachPinText = this.config.attachPinText;
-    this.hideProgressBar = this.config.hideProgressBar;
     this.formatsAllowed = this.config.formatsAllowed;
-    this.hideResetBtn = this.config.hideResetBtn;
-    this.hideSelectBtn = this.config.hideSelectBtn;
     this.maxSize = this.config.maxSize;
     this.multiple = this.config.multiple;
     this.theme = this.config.theme;
     this.uploadAPI = this.config.uploadAPI;
     this.headers = this.config.uploadAPI.headers;
     console.log("config: ", this.config);
+    this.findTheme();
+  }
+
+  findTheme() {
+    let theme = this.config.theme && this.config.theme.toLowerCase() || "uploadtheme";
+    if (theme === 'uploadtheme')
+      this.showUpload = true;
+    else
+      if (theme === 'searchtheme')
+        this.showSearch = true;
+      else
+        if (theme === 'both') {
+          this.showUpload = true;
+          this.showSearch = true;
+        }
   }
 
   onChange(event) {
-    //console.log(this.maxSize + this.formatsAllowed + this.multiple);
-    this.notAllowedList = [];
-    console.log("onchange hit");
+
+    //this.notAllowedList = [];
     if (this.afterUpload || !this.multiple) {
       this.selectedFiles = [];
       this.Caption = [];
@@ -86,9 +90,6 @@ export class FileCustPickerComponent implements OnInit {
     let formatsCount;
     formatsCount = this.formatsAllowed.match(new RegExp("\\.", "g"));
     formatsCount = formatsCount.length;
-    //console.log("NO OF FORMATS ALLOWED= "+formatsCount);
-    //console.log("-------------------------------");
-    //ITERATE SELECTED FILES
 
     let files;
     if (event.type == "drop") {
@@ -102,16 +103,13 @@ export class FileCustPickerComponent implements OnInit {
     //console.log(file);
 
     let currentFileExt;
-
     let ext;
-
     let frmtAllowed;
+
     for (let i = 0; i < files.length; i++) {
-      //CHECK FORMAT
-      //CURRENT FILE EXTENSION
+
       currentFileExt = this.reg.exec(files[i].name);
       currentFileExt = currentFileExt[1];
-      //console.log(file[i].name);
       frmtAllowed = false;
       //FORMAT ALLOWED LIST ITERATE
       for (let j = formatsCount; j > 0; j--) {
@@ -134,12 +132,15 @@ export class FileCustPickerComponent implements OnInit {
             fileSize: this.convertSize(files[i].size),
             errorMsg: "Invalid size"
           });
-          continue;
         }
         else {
           //format allowed and size allowed then add file to selectedFile array,  add objectURL before adding
           if (this.isImage(files[i])) {
             files[i].objectURL = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(files[i]));
+          }
+          // As we can't change the name of already created file, creating a new property fileName
+          if (files[i].name) {
+            files[i].fileName = files[i].name;
           }
           this.selectedFiles.push(files[i]);
           console.log("file got added " + this.selectedFiles);
@@ -153,13 +154,10 @@ export class FileCustPickerComponent implements OnInit {
           fileSize: this.convertSize(files[i].size),
           errorMsg: "Invalid format"
         });
-        continue;
       }
     }
     if (this.selectedFiles.length !== 0) {
       this.uploadBtn = true;
-      // if (this.theme == "attachPin")
-      //     this.uploadFiles();
     }
     else {
       this.uploadBtn = false;
@@ -228,7 +226,6 @@ export class FileCustPickerComponent implements OnInit {
     //console.log(this.selectedFiles);
 
     let i;
-    this.progressBarShow = true;
     this.uploadClick = false;
     this.notAllowedList = [];
 
@@ -237,25 +234,21 @@ export class FileCustPickerComponent implements OnInit {
     let xhr = new XMLHttpRequest();
 
     let formData = new FormData();
+    console.log("Selected files ");
+    console.log(this.selectedFiles[i]);
     for (i = 0; i < this.selectedFiles.length; i++) {
       if (this.Caption[i] == undefined)
         this.Caption[i] = "file" + i;
       //Add DATA TO BE SENT
-      formData.append(this.Caption[i], this.selectedFiles[i] /*, this.selectedFiles[i].name*/);
-      //console.log(this.selectedFiles[i]+"{"+this.Caption[i]+" (Caption)}");
-    }
-    if (i > 1) {
-      this.singleFile = false;
-    }
-    else {
-      this.singleFile = true;
+      // formData.append(this.Caption[i], this.selectedFiles[i], this.selectedFiles[i].fileName);
+      console.log(this.selectedFiles[i]+"{"+this.Caption[i]+" (Caption)}");
+      formData.append("files",this.selectedFiles[i]);
     }
     xhr.onreadystatechange = evnt => {
       //console.log("onready");
       if (xhr.readyState === 4) {
         if (xhr.status !== 200) {
           isError = true;
-          this.progressBarShow = false;
           this.uploadBtn = false;
           this.uploadMsg = true;
           this.afterUpload = true;
@@ -266,6 +259,7 @@ export class FileCustPickerComponent implements OnInit {
         }
         this.ApiResponse.emit(xhr);
       }
+      this.manuallyDetectChanges();
     };
     xhr.upload.onprogress = evnt => {
       this.uploadBtn = false; // button should be disabled by process uploading
@@ -277,7 +271,6 @@ export class FileCustPickerComponent implements OnInit {
     xhr.onload = evnt => {
       //console.log("onload");
       //console.log(evnt);
-      this.progressBarShow = false;
       this.uploadBtn = false;
       this.uploadMsg = true;
       this.afterUpload = true;
@@ -286,19 +279,22 @@ export class FileCustPickerComponent implements OnInit {
         this.uploadMsgClass = "text-success lead";
         //console.log(this.uploadMsgText + " " + this.selectedFiles.length + " file");
       }
+      this.manuallyDetectChanges();
     };
     xhr.onerror = evnt => {
       //console.log("onerror");
       //console.log(evnt);
     };
-    xhr.open("POST", this.uploadAPI, true);
-    for (const key of Object.keys(this.headers)) {
+    xhr.open("POST", this.uploadAPI.url);
+   // for (const key of Object.keys(this.headers)) {
       // Object.keys will give an Array of keys
-      xhr.setRequestHeader(key, this.headers[key]);
-    }
+     // xhr.setRequestHeader(key, this.headers[key]);
+    //}
     //let token = sessionStorage.getItem("token");
     //xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
     //xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    console.log("From Data");
+    console.log(formData);
     xhr.send(formData);
   }
 
@@ -316,22 +312,31 @@ export class FileCustPickerComponent implements OnInit {
 
   onEditFile(index) {
     this.selectedFiles[index].showNameInput = true;
-    console.log(this.selectedFiles[index]);
-    console.log(this.selectedFiles[index].showNameInput);
+    this.manuallyDetectChanges();
+  }
+
+  saveEditedFile(index) {
+    this.selectedFiles[index].showNameInput = false;
+    this.manuallyDetectChanges();
   }
 
   showNameInputbox(index) {
     this.selectedFiles[index].showNameInput = true;
-    //console.log(this.selectedFiles[index]);
+    this.manuallyDetectChanges();
   }
 
   hideNameInputbox(index) {
     this.selectedFiles[index].showNameInput = false;
-    //console.log(this.selectedFiles[index]);
+    this.manuallyDetectChanges();
   }
 
-  changeInputVal(event) {
-    console.log(event.path.value);
+  changeInputVal(event, index) {
+    console.log(event.target.value);
+    let newFileName = event.target.value;
+    this.selectedFiles[index].fileName = newFileName;
+    console.log(this.selectedFiles[index]);
+    this.selectedFiles[index].showNameInput = false;
+    this.manuallyDetectChanges();
   }
 
   isImage(file: File): boolean {

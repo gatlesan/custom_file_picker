@@ -25,13 +25,10 @@ import { FileCustPickerComponent } from './file-cust-picker/file-cust-picker/fil
 })
 export class AppModule {
   constructor(private injector: Injector) {
-    // createCustomElement form angular elements package
+    // createCustomElement fromm angular elements package
     const customFileuploader = createCustomElement(FileuploaderComponent, { injector });
-    // const fileuploader = createCustomElement(FileCustPickerComponent, { injector });
     // leverages browser DOM Api customElements function to define a CE.
     customElements.define('app-fileuploader', customFileuploader);
-    // customElements.define('app-file-cust-picker', fileuploader);
-    console.log(customElements.get('app-fileuploader'));
   }
   // bootstrap the ng module
   ngDoBootstrap() { }

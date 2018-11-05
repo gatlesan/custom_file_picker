@@ -8,6 +8,7 @@
 </head>
 <body>
   <!--  Testing the fileuploader functionality you do not actually need it for building a CE -->
- <app-fileuploader config='{"multiple":true,"formatsAllowed":".jpg,.png","maxSize":"20","uploadAPI":{"url":"https://example-file-upload-api","headers":{"Content-Type":"text/plain;charset=UTF-8"}},"theme":"inc-dragNDrop","hideProgressBar":true,"hideResetBtn":false,"hideSelectBtn":false,"attachPinText":"select files"}'></app-fileuploader>
+ <div><h4>Image Upload</h4></div>
+ <app-fileuploader config='{"multiple":true,"formatsAllowed":".jpg,.png","maxSize":"20","uploadAPI":{"url":"http://localhost:8081/uploadMultipleFiles","headers":{"Content-Type":"multipart/form-data; boundary=???"}},"theme":"both"}'></app-fileuploader>
 </body>
 </html>

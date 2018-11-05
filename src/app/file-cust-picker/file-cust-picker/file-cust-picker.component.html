@@ -1,8 +1,7 @@
 <div class="container" id="default">
 
     <!-- Drag n Drop theme Starts -->
-    <div *ngIf="theme == 'inc-dragNDrop'" id="dragNDrop" [ngClass]="(hideSelectBtn && hideResetBtn) ? null : 'dragNDropBtmPad'"
-        class="dragNDrop">
+    <div *ngIf="showUpload" id="dragNDrop" [ngClass]="( !showUpload ) ? null : 'dragNDropBtmPad'" class="dragNDrop">
         <div style="position:relative;">
             <div id="div1" class="div1 afu-dragndrop-box" (drop)="drop($event)" (dragover)="allowDrop($event)">
                 <p class="afu-dragndrop-text">Drag N Drop</p>
@@ -11,46 +10,58 @@
         </div>
     </div>
     <!-- Drag n Drop theme Ends -->
-
-    <label for="sel{{id}}" class="btn btn-primary btn-sm afu-select-btn" *ngIf="!hideSelectBtn">Select File<span *ngIf="multiple">s</span></label>
-    <input type="file" id="sel{{id}}" style="display: none" *ngIf="!hideSelectBtn" (change)="onChange($event)" title="Select file"
-        name="files[]" [accept]=formatsAllowed [attr.multiple]="multiple ? '' : null" />
-    <button class="btn btn-info btn-sm resetBtn afu-reset-btn" (click)="resetFileUpload()" *ngIf="!hideResetBtn">Reset</button>
-    <br *ngIf="!hideSelectBtn">
-    <p class="constraints-info afu-constraints-info">({{formatsAllowed}}) Size limit- {{(convertSize(maxSize
-        *1024000))}}</p>
+    <div *ngIf="showUpload">
+        <label for="sel{{id}}" class="btn btn-primary btn-sm afu-select-btn">Select File<span *ngIf="multiple">s</span></label>
+        <input type="file" id="sel{{id}}" style="display: none" (change)="onChange($event)" title="Select files" name="files[]"
+            [accept]=formatsAllowed [attr.multiple]="multiple ? '' : null" />
+        <button class="btn btn-info btn-sm resetBtn afu-reset-btn" (click)="resetFileUpload()">Reset</button>
+        <p class="constraints-info afu-constraints-info">({{formatsAllowed}}) Size limit- {{(convertSize(maxSize
+            *1024000))}}</p>
+    </div>
+    <div id="custom-search-input">
+        <div class="input-group col-md-3">
+            <input type="text" class="form-control input-lg" placeholder="Search">
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="button">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+    <br>
+    <br>
     <!--Selected file list-->
-    <div class="row afu-valid-file" *ngFor="let sf of selectedFiles;let i=index">
-        <div class="col-xs-1"><img [src]="sf.objectURL" *ngIf="isImage(sf)" [width]="previewWidth" /></div>
-        <div class="col-xs-2 textOverflow"><input type="text" (change)="changeInputVal($event)" (focus)="showNameInputbox(i)" (focusout)="hideNameInputbox(i)"  [ngClass]="sf.showNameInput ? 'text-primary' : 'fileNameInput text-primary'" value={{sf.name}}></div>
-        <div class="col-xs-1 size-convert"><strong>{{convertSize(sf.size)}}</strong></div>
-        <div class="col-xs-2">
-            <a class="glyphicon glyphicon-remove-sign col-xs-1" (click)="onRemoveFile(i)"></a>
-            <a class="glyphicon glyphicon-edit col-xs-1" (click)="onEditFile(i)"></a>
-        </div>
-        <!--  <input class="col-xs-3 progress caption"  type="text"  placeholder="Caption.."  [(ngModel)]="Caption[i]"  *ngIf="uploadClick"/> -->
-        <div class="progress col-xs-3 padMarg afu-progress-bar" *ngIf="singleFile && progressBarShow && !hideProgressBar">
-            <span class="progress-bar progress-bar-success" role="progressbar" [ngStyle]="{'width':percentComplete+'%'}">{{percentComplete}}%</span>
-        </div>
-        <a class="col-xs-1" role="button" (click)="removeFile(i,'sf')" *ngIf="uploadClick"><i class="fa fa-times"></i></a>
-    </div>
-    <!--Invalid file list-->
-    <div class="row text-danger afu-invalid-file" *ngFor="let na of notAllowedList;let j=index">
-        <div class="col-xs-1"></div>
-        <div class="col-xs-2 textOverflow"><span>{{na['fileName']}}</span></div>
-        <div class="col-xs-1 size-convert"><strong>({{na['fileSize']}})</strong></div>
-        <div class="col-xs-2"><a class="glyphicon glyphicon-remove-sign col-xs-1 delFileIcon" role="button" (click)="removeFile(j,'na')"
-                *ngIf="uploadClick"></a></div>
-    </div>
-
-    <p *ngIf="uploadMsg" class="{{uploadMsgClass}} + afu-upload-status">{{uploadMsgText}}<p>
-            <div *ngIf="!singleFile && progressBarShow && !hideProgressBar">
-                <div class="progress col-xs-4 padMarg afu-progress-bar">
-                    <span class="progress-bar progress-bar-success" role="progressbar" [ngStyle]="{'width':percentComplete+'%'}">{{percentComplete}}%</span>
-                </div>
-                <br>
-                <br>
+    <div *ngIf="showUpload || showSearch">
+        <div class="row afu-valid-file" *ngFor="let sf of selectedFiles;let i=index">
+            <div class="col-xs-1"><img [src]="sf.objectURL" *ngIf="isImage(sf)" [width]="previewWidth" /></div>
+            <div class="col-xs-2 textOverflow"><input #nameField type="text" (change)="changeInputVal($event,i)"
+                    (focus)="showNameInputbox(i)" (focusout)="hideNameInputbox(i)" [ngClass]="sf.showNameInput ? 'text-primary' : 'fileNameInput text-primary'"
+                    value={{sf.fileName}}></div>
+            <div *ngIf="showUpload" class="col-xs-1 size-convert"><strong>{{convertSize(sf.size)}}</strong></div>
+            <div *ngIf="showUpload" class="col-xs-2">
+                <a class="glyphicon glyphicon-remove-sign col-xs-1" (click)="onRemoveFile(i)"></a>
+                <a class="glyphicon glyphicon-edit col-xs-1" (click)="onEditFile(i)"></a>
+                <a class="glyphicon glyphicon-ok col-xs-1" (click)="saveEditedFile(i)"></a>
             </div>
-            <button class="btn btn-success afu-upload-btn" type="button" (click)="uploadFiles()" [disabled]=!uploadBtn>{{uploadBtnText}}</button>
             <br>
-</div>
+            <br>
+        </div>
+    </div>
+    <div *ngIf="showUpload">
+        <!--Invalid file list-->
+        <div class="row text-danger afu-invalid-file" *ngFor="let na of notAllowedList;let j=index">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-2 textOverflow"><span>{{na['fileName']}}</span></div>
+            <div class="col-xs-1 size-convert"><strong>({{na['fileSize']}})</strong></div>
+            <div class="col-xs-2"><a class="glyphicon glyphicon-remove-sign col-xs-1 delFileIcon" role="button" (click)="removeFile(j,'na')"
+                    *ngIf="uploadClick"></a></div>
+            <br>
+            <br>
+        </div>
+        <div>
+            <p *ngIf="showUpload" class="{{uploadMsgClass}} + afu-upload-status">{{uploadMsgText}}<p>
+                    <button *ngIf="showUpload" class="btn btn-success afu-upload-btn" type="button" (click)="uploadFiles()"
+                        [disabled]=!uploadBtn>{{uploadBtnText}}</button>
+                </p>
+        </div>
+    </div>
