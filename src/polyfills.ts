@@ -43,15 +43,15 @@ import 'core-js/es7/reflect';
  * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
  */
 // Run `npm install --save intl`.
-import 'intl'; 
+import 'intl';
 import 'intl/locale-data/complete.js';
 import 'intl/locale-data/jsonp/en.js';
 
-if (typeof SVGElement.prototype.contains == 'undefined') {
+if (typeof SVGElement.prototype.contains === 'undefined') {
     SVGElement.prototype.contains = HTMLDivElement.prototype.contains;
 }
 
-/* As project is compiled to serve ES5 to all browsers, ES5-style classes cannot properly extend ES6 
-classes creates problem in chrome therefore need below adapter */
+/* As project is compiled to serve ES5 to all browsers,
+ ES5-style classes cannot properly extend ES6 classes creates problem in chrome therefore need below adapter */
 
 import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';

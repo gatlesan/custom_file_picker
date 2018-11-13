@@ -5,10 +5,13 @@
   <title>FileuploaderApp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+  .test {color:blue;}</style>
 </head>
 <body>
   <!--  Testing the fileuploader functionality you do not actually need it for building a CE -->
+  <!-- <p class="test">hello</p> -->
  <div><h4>Image Upload</h4></div>
- <app-fileuploader config='{"multiple":true,"formatsAllowed":".jpg,.png","maxSize":"20","uploadAPI":{"url":"http://localhost:8081/uploadMultipleFiles","headers":{"Content-Type":"multipart/form-data; boundary=???"}},"theme":"both"}'></app-fileuploader>
+ <app-fileuploader config='{"multiple":true,"formatsAllowed":".jpg,.png","maxSize":"2","uploadAPI":{"url":"http://localhost:8081/uploadMultipleFiles","headers":{"Content-Type":"multipart/form-data; boundary=???"}},"theme":"uploadTheme"}'></app-fileuploader>
 </body>
 </html>

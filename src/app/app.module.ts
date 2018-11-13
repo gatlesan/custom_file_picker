@@ -20,7 +20,7 @@ import { FileCustPickerComponent } from './file-cust-picker/file-cust-picker/fil
     HttpClientModule
   ],
   // An entry component is any component that Angular loads imperatively, (which means you're not referencing it in the template).
-  //bootstrap: [FileuploaderComponent],
+  // bootstrap: [FileuploaderComponent],
   entryComponents: [FileuploaderComponent]
 })
 export class AppModule {
